@@ -43,11 +43,16 @@ public class UserChangeDataTest extends TestBase {
                 TestBase.faker.internet().emailAddress(),
                 TestBase.faker.random().hex(8),
                 TestBase.faker.name().firstName());
-        UserClient.changeUserDataWithToken(user, UserClient.getAccessToken(email, password))
+        User newUser = new User(
+                TestBase.faker.internet().emailAddress(),
+                TestBase.faker.random().hex(8),
+                TestBase.faker.name().firstName());
+        UserClient.create(user);
+        UserClient.changeUserDataWithToken(newUser, UserClient.getAccessToken(user.getEmail(), user.getPassword()))
                 .then()
                 .statusCode(200)
-                .body("user.email", notNullValue())
-                .body("user.name", notNullValue());
+                .body("user.email", equalTo(newUser.getEmail()))
+                .body("user.name", equalTo(newUser.getName()));
     }
 
     @Test

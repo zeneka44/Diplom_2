@@ -3,20 +3,18 @@ package user;
 import com.google.gson.Gson;
 import data.User;
 import io.restassured.response.Response;
-import org.hamcrest.CoreMatchers;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
 public class UserClient {
     public static final String AUTH_ENDPOINT = "/api/auth";
     public static final String CREATE_USER_ENDPOINT = AUTH_ENDPOINT + "/register";
     public static final String LOGIN_USER_ENDPOINT = AUTH_ENDPOINT + "/login";
-    public static final String GET_USER_ENDPOINT =  AUTH_ENDPOINT + "/user";
+    public static final String USER_ENDPOINT =  AUTH_ENDPOINT + "/user";
 
 
     public static Response create(User user) {
@@ -53,21 +51,23 @@ public class UserClient {
                 .header("Authorization", "Bearer" + accessToken)
                 .and()
                 .when()
-                .delete(GET_USER_ENDPOINT);
+                .delete(USER_ENDPOINT);
     }
     public static Response changeUserDataWithToken(User user, String accessToken) {
         return given()
+                .header("Content-type", "application/json")
                 .header("Authorization", "Bearer" + accessToken)
                 .and()
+                .body(user)
                 .when()
-                .patch(GET_USER_ENDPOINT);
+                .patch(USER_ENDPOINT);
     }
     public static Response changeUserDataWithoutToken() {
         return given()
                 .header("Content-type", "application/json")
                 .and()
                 .when()
-                .patch(GET_USER_ENDPOINT);
+                .patch(USER_ENDPOINT);
     }
 
 }
